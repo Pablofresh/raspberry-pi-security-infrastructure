@@ -4,6 +4,42 @@
 
 Built and hardened a Raspberry Pi 5 as an always-on security infrastructure node for a home cybersecurity lab. The system provides DNS filtering, local recursive DNS resolution, monitoring, visualization, and secure remote administration. The project focused on service enumeration, attack-surface reduction, interface-aware firewall policy, remote access hardening, and validation from a separate Windows workstation.
 
+## Network Architecture
+
+```mermaid
+flowchart TD
+    Internet[Internet]
+    Router[TP-Link ER706W Router]
+    Switch[TP-Link SG2008 Managed Switch]
+    Windows[Windows 11 Workstation]
+    Pi[Raspberry Pi 5 Security Node<br/>LAN: 192.168.0.10]
+    Tailnet[Tailscale Private Network]
+    Remote[Remote Tailscale Device]
+
+    PiHole[Pi-hole<br/>DNS Filtering<br/>Port 53]
+    Unbound[Unbound<br/>Recursive DNS<br/>127.0.0.1:5335]
+    Prometheus[Prometheus<br/>Metrics Collection<br/>Port 9090]
+    NodeExporter[Node Exporter<br/>System Metrics<br/>Port 9100]
+    Grafana[Grafana<br/>Monitoring Dashboards<br/>Port 3000]
+
+    Internet --> Router
+    Router --> Switch
+    Switch --> Windows
+    Switch --> Pi
+
+    Windows -->|DNS queries| PiHole
+    PiHole -->|Recursive queries| Unbound
+    Unbound --> Internet
+
+    NodeExporter --> Prometheus
+    Prometheus --> Grafana
+
+    Windows -.->|Private management| Tailnet
+    Remote -.->|Remote management| Tailnet
+    Tailnet -.->|SSH, Grafana, VNC| Pi
+```
+
+[Detailed architecture and access-control documentation](diagrams/network-architecture.md)
 ## Objectives
 
 - Deploy a Raspberry Pi 5 as a lightweight security infrastructure server.
