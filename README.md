@@ -6,7 +6,6 @@ Built and hardened a Raspberry Pi 5 as an always-on security infrastructure node
 
 ## Network Architecture
 
-## Network Architecture
 
 ![Raspberry Pi 5 Security Infrastructure Network Architecture](diagrams/network-architecture.png)
 
