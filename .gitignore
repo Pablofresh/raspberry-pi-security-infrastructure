@@ -1,0 +1,36 @@
+# Secrets and credentials
+.env
+*.key
+*.pem
+*.p12
+*.pfx
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# Raw security baselines and archives
+*.tar.gz
+*.zip
+homelab-baseline/
+homelab-baseline-*/
+
+# Logs
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporary files
+*.tmp
+*.bak
