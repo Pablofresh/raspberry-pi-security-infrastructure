@@ -2,54 +2,37 @@
 
 This diagram shows the network paths, service relationships, monitoring flow, and management access controls implemented in the Raspberry Pi security infrastructure lab.
 
-```mermaid
-flowchart TD
-    Internet[Internet]
-    Router[TP-Link ER706W Router]
-    Switch[TP-Link SG2008 Managed Switch]
-    Windows[Windows 11 Workstation]
-    Pi[Raspberry Pi 5 Security Node<br/>LAN: 192.168.0.10]
-    Tailnet[Tailscale Private Network]
-    Remote[Remote Tailscale Device]
+# Network Architecture
 
-    PiHole[Pi-hole<br/>DNS Filtering<br/>Port 53]
-    Unbound[Unbound<br/>Recursive DNS<br/>127.0.0.1:5335]
-    Prometheus[Prometheus<br/>Metrics Collection<br/>Port 9090]
-    NodeExporter[Node Exporter<br/>System Metrics<br/>Port 9100]
-    Grafana[Grafana<br/>Monitoring Dashboards<br/>Port 3000]
-    SSH[SSH<br/>Port 22]
-    VNC[TigerVNC<br/>Port 5902]
-    Fail2Ban[Fail2Ban<br/>SSH Protection]
-    UFW[UFW<br/>Host Firewall]
+The diagram below shows the physical network topology, DNS resolution path,
+monitoring stack, security controls, and private remote administration path
+used in the Raspberry Pi 5 security infrastructure lab.
 
-    Internet --> Router
-    Router --> Switch
-    Switch --> Windows
-    Switch --> Pi
+![Raspberry Pi 5 Security Infrastructure Network Architecture](network-architecture.png)
 
-    Windows -->|DNS queries| PiHole
-    PiHole -->|Recursive queries| Unbound
-    Unbound --> Internet
+## Architecture Summary
 
-    NodeExporter --> Prometheus
-    Prometheus --> Grafana
+The Raspberry Pi 5 operates as a single security infrastructure server hosting
+multiple local services.
 
-    Windows -.->|Private management path| Tailnet
-    Remote -.->|Remote management path| Tailnet
-    Tailnet -.->|SSH 22| SSH
-    Tailnet -.->|Grafana 3000| Grafana
-    Tailnet -.->|VNC 5902| VNC
+### DNS Security
 
-    Pi --- PiHole
-    Pi --- Unbound
-    Pi --- NodeExporter
-    Pi --- Prometheus
-    Pi --- Grafana
-    Pi --- SSH
-    Pi --- VNC
-    Pi --- Fail2Ban
-    Pi --- UFW
-```
+Client DNS requests are sent to Pi-hole for filtering. Approved queries are
+forwarded to Unbound, which performs recursive DNS resolution.
+
+### Monitoring
+
+Node Exporter collects system metrics from the Raspberry Pi. Prometheus collects
+and stores the metrics, while Grafana provides monitoring dashboards and
+visualization.
+
+### Security and Remote Administration
+
+UFW enforces host-based firewall policy, while Fail2Ban monitors authentication
+activity and responds to repeated failed login attempts.
+
+Administrative access is restricted to the private Tailscale network for SSH,
+Grafana, and TigerVNC access.
 
 ## Access-Control Summary
 
